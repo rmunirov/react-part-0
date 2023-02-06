@@ -1,0 +1,10 @@
+.Contributors {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    &__buttons {
+        display: flex;
+        gap: 10px;
+    }
+}
