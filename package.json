@@ -2,6 +2,7 @@
     "name": "react-part-0",
     "version": "0.1.0",
     "private": true,
+    "homepage" : "http://rmunirov.github.io/react-part-0",
     "dependencies": {
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^13.4.0",
@@ -19,7 +20,7 @@
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "deploy": "npm build && gh-pages -d build"
+        "deploy": "npm run build && gh-pages -d build"
     },
     "eslintConfig": {
         "extends": [
