@@ -1,0 +1,22 @@
+.Repository {
+    display: flex;
+    border-bottom: 1px solid;
+    padding: 0 5px;
+    justify-content: space-between;
+    cursor: pointer;
+
+    &__item {
+        flex: 1 1 0px;
+        border-right: 1px solid;
+        padding: 5px;
+        // overflow: hidden;
+
+        &:last-child {
+            border: none;
+        }
+    }
+
+    &_active {
+        background-color: #87d68d;
+    }
+}

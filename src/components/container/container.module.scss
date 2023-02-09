@@ -1,0 +1,26 @@
+.Container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid;
+    border-radius: 10px 10px 0 0;
+
+    &__header {
+        font-size: 20px;
+        font-weight: 500;
+        border-radius: 10px 10px 0 0;
+        padding: 5px;
+        text-align: center;
+        border-bottom: 1px solid;
+        background-color: #3c84ab;
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        height: 200px;
+
+        &_scroll {
+            overflow-y: scroll;
+        }
+    }
+}
