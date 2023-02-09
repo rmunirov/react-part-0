@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, PropsWithChildren } from "react";
 import classNames from "classnames/bind";
 import styles from "./button.module.scss";
 
@@ -6,18 +6,14 @@ const cn = classNames.bind(styles);
 const CLASS_NAME = "Button";
 
 type PropsType = {
-    title: string;
     onClick: () => void;
     full?: boolean;
 };
 
-const Button: FC<PropsType> = ({ title, full, onClick }) => {
-    const handleClick = () => {
-        onClick();
-    };
+const Button: FC<PropsWithChildren<PropsType>> = ({ full, onClick, children }) => {
     return (
-        <button className={cn(CLASS_NAME, { [`${CLASS_NAME}_full`]: full })} onClick={handleClick}>
-            {title}
+        <button type="button" className={cn(CLASS_NAME, { [`${CLASS_NAME}_full`]: full })} onClick={onClick}>
+            {children}
         </button>
     );
 };

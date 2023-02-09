@@ -6,19 +6,19 @@ const cn = classNames.bind(styles);
 const CLASS_NAME = "Input";
 
 type PropsType = {
-    value: string;
+    defaultValue: string;
     placeholder: string;
     onChange: (value: string) => void;
 };
 
-const Input: FC<PropsType> = ({ value = "", placeholder, onChange }) => {
+const Input: FC<PropsType> = ({ defaultValue = "", placeholder, onChange }) => {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         onChange(event.target.value);
     };
 
     return (
         <div className={cn(CLASS_NAME)}>
-            <input className={cn(`${CLASS_NAME}__field`)} type="text" value={value} placeholder={placeholder} onChange={handleChange} />
+            <input className={cn(`${CLASS_NAME}__field`)} type="text" defaultValue={defaultValue} placeholder={placeholder} onChange={handleChange} />
         </div>
     );
 };

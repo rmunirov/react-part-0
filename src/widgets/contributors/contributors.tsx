@@ -12,9 +12,9 @@ const CLASS_NAME = "Contributors";
 const Contributors: FC = () => {
     const [activeContributor, setActiveContributor] = useState<ContributorType | null>(null);
     const [randomReviewer, setRandomReviewer] = useState<ContributorType | null>(null);
-    const [counter, setCounter] = useState(0);
-    const contributorsToSelect = useRef<Array<ContributorType>>([]);
-    const interval = useRef<NodeJS.Timer>();
+    const counterRef = useRef(0);
+    let contributorsToSelect: Array<ContributorType> = [];
+    const intervalRef = useRef<NodeJS.Timer>();
 
     const dispatch = useDispatch();
     const dispatchThunk = dispatch as (fn: FetchDataFromGithub) => void;
@@ -24,15 +24,15 @@ const Contributors: FC = () => {
     const currentUser = useSelector((state: RootState) => state.github.currentUser);
 
     useEffect(() => {
-        if (counter >= 5) {
-            clearInterval(interval.current);
-            setCounter(0);
+        if (counterRef.current >= 5) {
+            clearInterval(intervalRef.current);
+            counterRef.current = 0;
             if (randomReviewer) {
                 dispatchThunk(fetchUser(randomReviewer.login, "reviewer"));
                 setRandomReviewer(null);
             }
         }
-    }, [counter]);
+    }, [randomReviewer, dispatchThunk]);
 
     const handleContributorClick = (id: number) => {
         if (contributors.length === 0 || !currentUser) {
@@ -69,29 +69,20 @@ const Contributors: FC = () => {
     };
 
     const handleRandomButtonClick = () => {
-        if (contributors.length === 0) {
+        contributorsToSelect = contributors.filter((item) => !blackList.includes(item.id));
+        if (contributorsToSelect.length === 0) {
             return;
         }
-        if (contributors.length === 1) {
-            setRandomReviewer(contributors[0]);
-            dispatchThunk(fetchUser(contributors[0].login, "reviewer"));
-            return;
-        }
-
-        contributorsToSelect.current = contributors.filter((item) => !blackList.includes(item.id));
-        if (contributorsToSelect.current.length === 0) {
-            return;
-        }
-        if (contributorsToSelect.current.length === 1) {
-            setRandomReviewer(contributorsToSelect.current[0]);
-            dispatchThunk(fetchUser(contributorsToSelect.current[0].login, "reviewer"));
+        if (contributorsToSelect.length === 1) {
+            setRandomReviewer(contributorsToSelect[0]);
+            dispatchThunk(fetchUser(contributorsToSelect[0].login, "reviewer"));
             return;
         }
 
-        interval.current = setInterval(() => {
-            const rand = Math.floor(Math.random() * contributorsToSelect.current.length);
-            setRandomReviewer(contributorsToSelect.current[rand]);
-            setCounter((prev) => prev + 1);
+        intervalRef.current = setInterval(() => {
+            const rand = Math.floor(Math.random() * contributorsToSelect.length);
+            setRandomReviewer(contributorsToSelect[rand]);
+            counterRef.current += 1;
         }, 500);
     };
 
@@ -115,10 +106,18 @@ const Contributors: FC = () => {
                     })}
             </Container>
             <div className={cn(`${CLASS_NAME}__buttons`)}>
-                <Button title="Lock" full onClick={handleLockButtonClick} />
-                <Button title="Unlock" full onClick={handleUnlockButtonClick} />
-                <Button title="Select" full onClick={handleSelectButtonClick} />
-                <Button title="Random" full onClick={handleRandomButtonClick} />
+                <Button full onClick={handleLockButtonClick}>
+                    Lock
+                </Button>
+                <Button full onClick={handleUnlockButtonClick}>
+                    Unlock
+                </Button>
+                <Button full onClick={handleSelectButtonClick}>
+                    Select
+                </Button>
+                <Button full onClick={handleRandomButtonClick}>
+                    Random
+                </Button>
             </div>
 
             {randomReviewer && (

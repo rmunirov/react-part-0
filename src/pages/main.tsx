@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import styles from "./main.module.scss";
 import classNames from "classnames/bind";
 import { Banner, Button, Input } from "../components";
@@ -12,8 +12,6 @@ const cn = classNames.bind(styles);
 const CLASS_NAME = "Main";
 
 const MainPage: FC = () => {
-    const [user, setUser] = useState("");
-
     const dispatch = useDispatch();
     const dispatchThunk = dispatch as (fn: FetchDataFromGithub) => void;
 
@@ -30,32 +28,27 @@ const MainPage: FC = () => {
         dispatch(setOptionsVisibility(!showOptions));
     };
 
-    const debounceFetchUser = useCallback(
-        debounce((userName: string) => {
-            dispatchThunk(fetchUser(userName, "user"));
-        }, 500),
-        [],
+    const debounceFetchUser = useMemo(
+        () =>
+            debounce((userName: string) => {
+                dispatchThunk(fetchUser(userName, "user"));
+            }, 500),
+        [dispatchThunk],
     );
-
-    useEffect(() => {
-        if (user) {
-            debounceFetchUser(user);
-        }
-    }, [user, debounceFetchUser]);
 
     useEffect(() => {
         if (currentUser) {
             dispatchThunk(fetchRepos(currentUser.login));
         }
-    }, [currentUser]);
+    }, [currentUser, dispatchThunk]);
 
     return (
         <div className={cn(CLASS_NAME)}>
             {showBanner && <Banner mode="error" value={error ?? "Something went wrong"} onClose={handleBannerClose}></Banner>}
-            <Button onClick={handleOptionsToggle} title="Hide"></Button>
+            <Button onClick={handleOptionsToggle}>Hide</Button>
             {showOptions && (
                 <>
-                    <Input value={user} placeholder="Enter login" onChange={setUser}></Input>
+                    <Input defaultValue="" placeholder="Enter login" onChange={(value) => debounceFetchUser(value)}></Input>
                     <Repositories />
                     <Contributors />
                     <Reviewers />
